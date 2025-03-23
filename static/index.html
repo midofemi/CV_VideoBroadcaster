@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Video Boradcast </title>
+        <style>
+
+            body{
+                font-family: Arial, sans-serif;
+                margin : 0;
+                padding : 0;
+                height : 100vh;
+                display : flex;
+                justify-content: center;
+                align-items: center;
+                color: #333;
+                background: url('./static/wallhaven.png') no-repeat center center fixed;
+                background-size: cover;
+            }
+            button {
+                padding: 10px 20px;
+                border: none;
+                background: #007bff;
+                color: #fff;
+                cursor: pointer;
+                border-radius: 5px;
+                box-shadow: 0 2px 5px #fff(0,0,0,0.1);
+            }
+            button:hover { background: #0056b3; }
+            h1 { color: #444;}
+            .container {
+                width : 70%;
+                max-width: 750px;
+                padding: 20px;
+                border-radius: 10px;
+                background: #fff;
+                text-align: centre;
+                position: relative;
+
+                box-shadow: 0 10px 20px #fff(0,0,0,0.2),
+                    0 6px 6px #fff(0,0,0,0.15);
+                border: 2px solid #e0e0e0;
+
+                background: linear-gradient(145deg, #ffffff, #e6e6e6);
+            }
+
+            .logo {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+            h1 { color: #444; }
+
+            .controls {
+                display: flex;
+                justify-content: space-between;
+                margin: 20px 0;
+            }
+
+
+            .button, .input {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+            select, input[type=range], input[type=number]{
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+            #status {
+                margin-top: 20px;
+                padding: 10px;
+                border: 1px solid #efe9e9;
+                background: #ccc;
+                border-radius: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <img src="/static/KNA.jpg" alt="Logo" class="logo">
+        <div class = "container">
+            <h1>
+                Virtual Camera Controller
+            </h1>
+            <div class = "controls">
+                <div class = "button">
+                    <button onclick = "getDevices()">List Devices</button>
+                    <button onclick = "startStream()">Start Stream</button>
+                    <button onclick = "stopStream()">Stop Stream</button>
+                </div>
+    
+                <div class = "input">
+                    <label for = "camera"> Choose camera </label>
+                    <select id = "camera"> </select>
+    
+                    <label for = "fps"> FPS </label>
+                    <input id ="fps" type = "number" min = "1" max = "60" value = "15">
+    
+                    <label for = "blur"> Blur Strength (odd number)</label>
+                    <input id = "blur" type = "range" min = "1" max = "52" value = "10">
+    
+                    <label for = "background"> Background </label>
+                    <select id = "background"> 
+                        <option value = "none"> No Background</option>
+                        <option value = "blur"> Blur</option>
+                        <option value = "default"> Default</option>
+                    </select>
+                    
+                
+                </div>
+    
+
+            </div>
+           <div id = "status"> Status : Waiting for Action...</div>
+        </div>
+
+        <script>
+            function getDevices() {
+                fetch('/devices')
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('camera');
+                    select.innerHTML = '';
+                    data.forEach(device => {
+                        select.innerHTML += `<option value="${device.id}">${device.name}</option>`;
+                    });
+                });
+
+                
+            }
+            function startStream() {
+            const source = document.getElementById('camera').value;
+            const fps = document.getElementById('fps').value;
+            const blur = document.getElementById('blur').value;
+            const background = document.getElementById('background').value;
+
+            fetch(`/start?source=${source}&fps=${fps}&blur=${blur}&background=${background}`) 
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('status').innerText = data.message;
+                });
+        }
+
+        function stopStream() {
+            fetch('/stop')
+                .then(response => response.json()) 
+                .then(data => {
+                    document.getElementById('status').innerText = data.message; 
+                }); 
+        } 
+
+        function updateBlurValue(value) {
+            document.getElementById('blurValue').innerText = `Blur Strength: ${value}`;
+        }
+        </script>
+
+    </body>
+</html>

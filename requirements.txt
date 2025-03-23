@@ -1,0 +1,5 @@
+uvicorn #Handles Request and Response between the UI and the Business layer
+fastapi
+pyvirtualcam
+opencv-python
+ultralytics
