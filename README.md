@@ -1,2 +1,2 @@
 # CV_VideoBroadcaster
-This tool uses computer vision to generate videos with visualize background as specified by the user. It can be integrated into any video communication tool like google meet or Zoom etc. 
+This tool leverages computer vision to generate videos with customizable virtual backgrounds as specified by the user. It can be seamlessly integrated into video communication platforms such as Google Meet, Zoom, and others.
